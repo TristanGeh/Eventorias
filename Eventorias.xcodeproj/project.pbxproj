@@ -8,17 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		E0E52F442CC7F1C9004E7E1D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E0E52F432CC7F1C9004E7E1D /* FirebaseAuth */; };
+		E0E52F6B2CCEA611004E7E1D /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E0E52F6A2CCEA611004E7E1D /* FirebaseFirestore */; };
+		E0E52F6D2CCEA611004E7E1D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = E0E52F6C2CCEA611004E7E1D /* FirebaseStorage */; };
+		E0E5302E2CCF41A9004E7E1D /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = E0E5302D2CCF41A9004E7E1D /* FirebaseCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		E0E52EF02CBD1CDE004E7E1D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E0E52ED72CBD1CD7004E7E1D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E0E52EDE2CBD1CD7004E7E1D;
-			remoteInfo = Eventorias;
-		};
-		E0E52EFA2CBD1CDE004E7E1D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E0E52ED72CBD1CD7004E7E1D /* Project object */;
 			proxyType = 1;
@@ -30,7 +26,6 @@
 /* Begin PBXFileReference section */
 		E0E52EDF2CBD1CD7004E7E1D /* Eventorias.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Eventorias.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0E52EEF2CBD1CDE004E7E1D /* EventoriasTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventoriasTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E0E52EF92CBD1CDE004E7E1D /* EventoriasUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventoriasUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -44,11 +39,6 @@
 			path = EventoriasTests;
 			sourceTree = "<group>";
 		};
-		E0E52EFC2CBD1CDE004E7E1D /* EventoriasUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = EventoriasUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,17 +47,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0E52F442CC7F1C9004E7E1D /* FirebaseAuth in Frameworks */,
+				E0E52F6B2CCEA611004E7E1D /* FirebaseFirestore in Frameworks */,
+				E0E5302E2CCF41A9004E7E1D /* FirebaseCore in Frameworks */,
+				E0E52F6D2CCEA611004E7E1D /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E0E52EEC2CBD1CDE004E7E1D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E0E52EF62CBD1CDE004E7E1D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -82,7 +68,6 @@
 			children = (
 				E0E52EE12CBD1CD7004E7E1D /* Eventorias */,
 				E0E52EF22CBD1CDE004E7E1D /* EventoriasTests */,
-				E0E52EFC2CBD1CDE004E7E1D /* EventoriasUITests */,
 				E0E52EE02CBD1CD7004E7E1D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -92,7 +77,6 @@
 			children = (
 				E0E52EDF2CBD1CD7004E7E1D /* Eventorias.app */,
 				E0E52EEF2CBD1CDE004E7E1D /* EventoriasTests.xctest */,
-				E0E52EF92CBD1CDE004E7E1D /* EventoriasUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -118,6 +102,9 @@
 			name = Eventorias;
 			packageProductDependencies = (
 				E0E52F432CC7F1C9004E7E1D /* FirebaseAuth */,
+				E0E52F6A2CCEA611004E7E1D /* FirebaseFirestore */,
+				E0E52F6C2CCEA611004E7E1D /* FirebaseStorage */,
+				E0E5302D2CCF41A9004E7E1D /* FirebaseCore */,
 			);
 			productName = Eventorias;
 			productReference = E0E52EDF2CBD1CD7004E7E1D /* Eventorias.app */;
@@ -146,29 +133,6 @@
 			productReference = E0E52EEF2CBD1CDE004E7E1D /* EventoriasTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		E0E52EF82CBD1CDE004E7E1D /* EventoriasUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = E0E52F092CBD1CDE004E7E1D /* Build configuration list for PBXNativeTarget "EventoriasUITests" */;
-			buildPhases = (
-				E0E52EF52CBD1CDE004E7E1D /* Sources */,
-				E0E52EF62CBD1CDE004E7E1D /* Frameworks */,
-				E0E52EF72CBD1CDE004E7E1D /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				E0E52EFB2CBD1CDE004E7E1D /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				E0E52EFC2CBD1CDE004E7E1D /* EventoriasUITests */,
-			);
-			name = EventoriasUITests;
-			packageProductDependencies = (
-			);
-			productName = EventoriasUITests;
-			productReference = E0E52EF92CBD1CDE004E7E1D /* EventoriasUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -183,10 +147,6 @@
 						CreatedOnToolsVersion = 16.0;
 					};
 					E0E52EEE2CBD1CDE004E7E1D = {
-						CreatedOnToolsVersion = 16.0;
-						TestTargetID = E0E52EDE2CBD1CD7004E7E1D;
-					};
-					E0E52EF82CBD1CDE004E7E1D = {
 						CreatedOnToolsVersion = 16.0;
 						TestTargetID = E0E52EDE2CBD1CD7004E7E1D;
 					};
@@ -211,7 +171,6 @@
 			targets = (
 				E0E52EDE2CBD1CD7004E7E1D /* Eventorias */,
 				E0E52EEE2CBD1CDE004E7E1D /* EventoriasTests */,
-				E0E52EF82CBD1CDE004E7E1D /* EventoriasUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -225,13 +184,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E0E52EED2CBD1CDE004E7E1D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		E0E52EF72CBD1CDE004E7E1D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -255,13 +207,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E0E52EF52CBD1CDE004E7E1D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -269,11 +214,6 @@
 			isa = PBXTargetDependency;
 			target = E0E52EDE2CBD1CD7004E7E1D /* Eventorias */;
 			targetProxy = E0E52EF02CBD1CDE004E7E1D /* PBXContainerItemProxy */;
-		};
-		E0E52EFB2CBD1CDE004E7E1D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E0E52EDE2CBD1CD7004E7E1D /* Eventorias */;
-			targetProxy = E0E52EFA2CBD1CDE004E7E1D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -493,40 +433,6 @@
 			};
 			name = Release;
 		};
-		E0E52F0A2CBD1CDE004E7E1D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7VVDBG6749;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.openclassrooms.EventoriasUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Eventorias;
-			};
-			name = Debug;
-		};
-		E0E52F0B2CBD1CDE004E7E1D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7VVDBG6749;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.openclassrooms.EventoriasUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Eventorias;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -557,15 +463,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E0E52F092CBD1CDE004E7E1D /* Build configuration list for PBXNativeTarget "EventoriasUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E0E52F0A2CBD1CDE004E7E1D /* Debug */,
-				E0E52F0B2CBD1CDE004E7E1D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -584,6 +481,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E0E52F422CC7F1C9004E7E1D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
+		};
+		E0E52F6A2CCEA611004E7E1D /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E0E52F422CC7F1C9004E7E1D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		E0E52F6C2CCEA611004E7E1D /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E0E52F422CC7F1C9004E7E1D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		E0E5302D2CCF41A9004E7E1D /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E0E52F422CC7F1C9004E7E1D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
