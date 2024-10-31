@@ -28,6 +28,27 @@
 		E0E52EEF2CBD1CDE004E7E1D /* EventoriasTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EventoriasTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E0E5306B2CD39AEE004E7E1D /* Exceptions for "EventoriasTests" folder in "Eventorias" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Mocks/AuthServiceMock.swift,
+				Mocks/EventServiceMock.swift,
+				Mocks/UserServiceMock.swift,
+			);
+			target = E0E52EDE2CBD1CD7004E7E1D /* Eventorias */;
+		};
+		E0E5306C2CD39AEE004E7E1D /* Exceptions for "EventoriasTests" folder in "EventoriasTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Mocks/AuthServiceMock.swift,
+				Mocks/EventServiceMock.swift,
+				Mocks/UserServiceMock.swift,
+			);
+			target = E0E52EEE2CBD1CDE004E7E1D /* EventoriasTests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E0E52EE12CBD1CD7004E7E1D /* Eventorias */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -36,6 +57,10 @@
 		};
 		E0E52EF22CBD1CDE004E7E1D /* EventoriasTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E0E5306B2CD39AEE004E7E1D /* Exceptions for "EventoriasTests" folder in "Eventorias" target */,
+				E0E5306C2CD39AEE004E7E1D /* Exceptions for "EventoriasTests" folder in "EventoriasTests" target */,
+			);
 			path = EventoriasTests;
 			sourceTree = "<group>";
 		};
