@@ -10,11 +10,13 @@ final class EventServiceTests: XCTestCase {
     
     var eventService: EventServiceProtocol!
     var mockEventService: MockEventService!
+    var eventListViewModel: EventListViewModel!
     
     override func setUp() {
         super.setUp()
         mockEventService = MockEventService()
         eventService = mockEventService
+        eventListViewModel = EventListViewModel(eventService: mockEventService)
     }
     
     override func tearDown() {
@@ -37,7 +39,7 @@ final class EventServiceTests: XCTestCase {
             time: "10:00 AM",
             createdBy: "mockUser",
             location: "123 Test Street",
-            imageUrl: "http://example.com/image.jpg"
+            imageUrl: "gs://eventorias.appspot.com"
         )
         
         eventService.addEvent(event: newEvent) { result in
@@ -64,7 +66,7 @@ final class EventServiceTests: XCTestCase {
             time: "10:00 AM",
             createdBy: "mockUser",
             location: "123 Test Street",
-            imageUrl: "http://example.com/image.jpg"
+            imageUrl: "gs://eventorias.appspot.com"
         )
         
         eventService.addEvent(event: newEvent) { result in
@@ -91,7 +93,7 @@ final class EventServiceTests: XCTestCase {
             time: "10:00 AM",
             createdBy: "mockUser",
             location: "123 Test Street",
-            imageUrl: "http://example.com/image1.jpg"
+            imageUrl: "gs://eventorias.appspot.com"
         )
         
         let event2 = EventRaw(
@@ -102,7 +104,7 @@ final class EventServiceTests: XCTestCase {
             time: "11:00 AM",
             createdBy: "mockUser2",
             location: "456 Test Avenue",
-            imageUrl: "http://example.com/image2.jpg"
+            imageUrl: "gs://eventorias.appspot.com"
         )
         
         mockEventService.eventsDatabase[event1.id] = event1
@@ -147,7 +149,7 @@ final class EventServiceTests: XCTestCase {
         eventService.fetchUserProfilPicture(forUID: "mockUser") { result in
             switch result {
             case .success(let profilePictureUrl):
-                XCTAssertEqual(profilePictureUrl, "mockProfilPictureUrl")
+                XCTAssertEqual(profilePictureUrl, "gs://eventorias.appspot.com")
                 expectation.fulfill()
             case .failure(let error):
                 XCTFail("Expected success, but got failure with error: \(error)")

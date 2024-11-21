@@ -2,8 +2,6 @@
 //  EventDetailView.swift
 //  Eventorias
 //
-//  Created by Tristan Géhanne on 31/10/2024.
-//
 
 import SwiftUI
 

@@ -29,10 +29,10 @@ struct EventView: View {
                     UserProfileView()
                         .environmentObject(userViewModel)
                 }
+                
+                Spacer()
             }
         }
-        
-        Spacer()
         
         PickerView(selectedTab: $selectedTab)
     }

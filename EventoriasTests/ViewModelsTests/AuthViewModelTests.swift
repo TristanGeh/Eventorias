@@ -70,22 +70,23 @@ final class AuthViewModelTests: XCTestCase {
     }
 
     func testLoginSuccess() {
-        mockAuthService.shouldSucceed = true
-        let expectation = self.expectation(description: "Login success")
+            mockAuthService.shouldSucceed = true
+            mockAuthService.usersDatabase["test@example.com"] = ["uid": "mock_uid"] 
+            let expectation = self.expectation(description: "Login success")
 
-        authViewModel.email = "test@example.com"
-        authViewModel.password = "password123"
+            authViewModel.email = "test@example.com"
+            authViewModel.password = "password123"
 
-        authViewModel.login()
+            authViewModel.login()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertEqual(self.authViewModel.errorMessage, "Logged successfully !")
-            XCTAssertTrue(self.authViewModel.isConnected)
-            expectation.fulfill()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                XCTAssertEqual(self.authViewModel.errorMessage, "Logged successfully !")
+                XCTAssertTrue(self.authViewModel.isConnected)
+                expectation.fulfill()
+            }
+
+            waitForExpectations(timeout: 1.0)
         }
-
-        waitForExpectations(timeout: 1.0)
-    }
 
     func testLoginFailure() {
         mockAuthService.shouldSucceed = false

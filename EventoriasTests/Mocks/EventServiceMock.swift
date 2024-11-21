@@ -31,7 +31,7 @@ class MockEventService: EventServiceProtocol {
 
     func fetchUserProfilPicture(forUID uid: String, completion: @escaping (Result<String, Error>) -> Void) {
         if shouldSucceed {
-            completion(.success("mockProfilPictureUrl"))
+            completion(.success("gs://eventorias.appspot.com"))
         } else {
             completion(.failure(NSError(domain: "MockError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Failed to fetch user name"])))
         }

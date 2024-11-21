@@ -12,7 +12,7 @@ class MockUserService: UserServiceProtocol {
     var usersDatabase: [String: User] = [:]
 
     init() {
-        let mockUser = User(uid: "mock_uid", name: "Mock User", notification: false, profilPicture: "test", email: "mock@user.com")
+        let mockUser = User(uid: "mock_uid", name: "Mock User", notification: false, profilPicture: "gs://eventorias.appspot.com", email: "mock@user.com")
         usersDatabase[mockUser.uid] = mockUser
     }
 
@@ -54,7 +54,7 @@ class MockUserService: UserServiceProtocol {
     func updateUserImage(user: User, image: UIImage, completion: @escaping (Result<Void, Error>) -> Void) {
         if shouldSucceed {
             if var existingUser = usersDatabase[user.uid] {
-                existingUser.profilPicture = "updated_mock_image_url"
+                existingUser.profilPicture = "gs://eventorias.appspot.com"
                 usersDatabase[user.uid] = existingUser
                 completion(.success(()))
             } else {

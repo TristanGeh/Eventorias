@@ -13,10 +13,11 @@ struct AddressTextFieldView: View {
     @State private var completer = MKLocalSearchCompleter()
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading) {
             Text("Address")
                 .font(.caption)
                 .foregroundColor(.gray)
+                .padding(.top, 10)
             
             TextField("", text: $address)
                 .onChange(of: address) { newValue in

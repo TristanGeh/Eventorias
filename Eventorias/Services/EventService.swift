@@ -45,7 +45,6 @@ class EventService: EventServiceProtocol {
             } else if let snapshot = snapshot {
                 print("Nombre de documents dans le snapshot: \(snapshot.documents.count)")
                 if snapshot.documents.isEmpty {
-                    print("Aucun document trouvé dans la collection 'TestEvents'")
                 } else {
                     snapshot.documents.forEach { document in
                         print("Document ID: \(document.documentID)")

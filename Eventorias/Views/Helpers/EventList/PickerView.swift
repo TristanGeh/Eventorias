@@ -36,8 +36,8 @@ struct PickerView: View {
             .frame(maxWidth: .infinity)
             
         }
-        .padding()
-        .padding(.vertical, 0)
+        .padding(.horizontal, 100)
+        .padding(.vertical, 10)
         .background(Color("Main").edgesIgnoringSafeArea(.bottom))
     }
 }

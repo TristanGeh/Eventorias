@@ -10,11 +10,13 @@ final class AuthServiceTests: XCTestCase {
     
     var authService: AuthServiceProtocol!
     var mockAuthService: MockAuthService!
+    var authViewModel: AuthViewModel!
     
     override func setUp() {
         super.setUp()
         mockAuthService = MockAuthService()
         authService = mockAuthService
+        authViewModel = AuthViewModel(authService: mockAuthService)
     }
     
     override func tearDown() {

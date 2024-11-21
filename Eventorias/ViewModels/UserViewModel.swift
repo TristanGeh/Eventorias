@@ -25,7 +25,7 @@ class UserViewModel: ObservableObject {
     
     func fetchUser() {
         guard let uid = Auth.auth().currentUser?.uid else {
-            self.errorMsg = "No user is logged in"
+            self.errorMsg = "Failed to fetch user"
             return
         }
         userService.fetchUser(withID: uid) { result in
@@ -40,8 +40,8 @@ class UserViewModel: ObservableObject {
                         self.emailToEdit = user.email
                         self.notificationEnabled = user.notification
                     }
-                case .failure(let error):
-                    self.errorMsg = error.localizedDescription
+                case .failure:
+                    self.errorMsg = "Failed to update user info"
                 }
             }
         }
@@ -83,8 +83,8 @@ class UserViewModel: ObservableObject {
                 case .success:
                     self.user = updatedUser
                     print("User notification preference updated successfully")
-                case .failure(let error):
-                    self.errorMsg = error.localizedDescription
+                case .failure:
+                    self.errorMsg = "Failed to update user notification preference"
                 }
             }
         }
@@ -92,7 +92,7 @@ class UserViewModel: ObservableObject {
     
     func updateUserImage() {
         guard let image = selectedImage, var updatedUser = user else {
-            self.errorMsg = "User not loaded or no image selected"
+            self.errorMsg = "Failed to update user image"
             return
         }
         userService.updateUserImage(user: updatedUser, image: image) { result in
