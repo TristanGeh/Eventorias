@@ -29,39 +29,71 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E0E5306B2CD39AEE004E7E1D /* Exceptions for "EventoriasTests" folder in "Eventorias" target */ = {
+		E033931C2CF3FBE5006B03BE /* Exceptions for "EventoriasTests" folder in "Eventorias" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Mocks/AuthServiceMock.swift,
-				Mocks/EventServiceMock.swift,
-				Mocks/UserServiceMock.swift,
+				Mocks/AuthMocks/AuthServiceMock.swift,
+				Mocks/AuthMocks/MockAuthRepository.swift,
+				Mocks/AuthMocks/MockFirebaseProvider.swift,
+				Mocks/EventMocks/EventListViewModelMock.swift,
+				Mocks/EventMocks/EventRepositoryMock.swift,
+				Mocks/EventMocks/EventServiceMock.swift,
+				Mocks/UserMocks/MockUserRepository.swift,
+				Mocks/UserMocks/MockUserViewModel.swift,
+				Mocks/UserMocks/UserServiceMock.swift,
+				RepositoriesTests/AuthRepsitoryTests.swift,
+				RepositoriesTests/EventRepsitoryTests.swift,
+				RepositoriesTests/UserRepsitoryTests.swift,
+				ServicesTests/AuthServicelTests.swift,
+				ServicesTests/EventServiceTests.swift,
+				ServicesTests/UserServiceTests.swift,
+				testImage.jpg,
+				ViewModelsTests/AuthViewModelTests.swift,
+				ViewModelsTests/EventListViewModelTests.swift,
+				ViewModelsTests/UserViewModelTests.swift,
 			);
 			target = E0E52EDE2CBD1CD7004E7E1D /* Eventorias */;
 		};
-		E0E5306C2CD39AEE004E7E1D /* Exceptions for "EventoriasTests" folder in "EventoriasTests" target */ = {
+		E033931D2CF3FBE5006B03BE /* Exceptions for "EventoriasTests" folder in "EventoriasTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Mocks/AuthServiceMock.swift,
-				Mocks/EventServiceMock.swift,
-				Mocks/UserServiceMock.swift,
+				Mocks/AuthMocks/AuthServiceMock.swift,
+				Mocks/AuthMocks/MockAuthRepository.swift,
+				Mocks/AuthMocks/MockFirebaseProvider.swift,
+				Mocks/EventMocks/EventListViewModelMock.swift,
+				Mocks/EventMocks/EventRepositoryMock.swift,
+				Mocks/EventMocks/EventServiceMock.swift,
+				Mocks/UserMocks/MockUserRepository.swift,
+				Mocks/UserMocks/MockUserViewModel.swift,
+				Mocks/UserMocks/UserServiceMock.swift,
+				RepositoriesTests/AuthRepsitoryTests.swift,
+				RepositoriesTests/EventRepsitoryTests.swift,
+				RepositoriesTests/UserRepsitoryTests.swift,
+				ServicesTests/AuthServicelTests.swift,
+				ServicesTests/EventServiceTests.swift,
+				ServicesTests/UserServiceTests.swift,
+				testImage.jpg,
+				ViewModelsTests/AuthViewModelTests.swift,
+				ViewModelsTests/EventListViewModelTests.swift,
+				ViewModelsTests/UserViewModelTests.swift,
 			);
 			target = E0E52EEE2CBD1CDE004E7E1D /* EventoriasTests */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		E03393042CF3FBE5006B03BE /* EventoriasTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E033931C2CF3FBE5006B03BE /* Exceptions for "EventoriasTests" folder in "Eventorias" target */,
+				E033931D2CF3FBE5006B03BE /* Exceptions for "EventoriasTests" folder in "EventoriasTests" target */,
+			);
+			path = EventoriasTests;
+			sourceTree = "<group>";
+		};
 		E0E52EE12CBD1CD7004E7E1D /* Eventorias */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Eventorias;
-			sourceTree = "<group>";
-		};
-		E0E52EF22CBD1CDE004E7E1D /* EventoriasTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				E0E5306B2CD39AEE004E7E1D /* Exceptions for "EventoriasTests" folder in "Eventorias" target */,
-				E0E5306C2CD39AEE004E7E1D /* Exceptions for "EventoriasTests" folder in "EventoriasTests" target */,
-			);
-			path = EventoriasTests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -92,7 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				E0E52EE12CBD1CD7004E7E1D /* Eventorias */,
-				E0E52EF22CBD1CDE004E7E1D /* EventoriasTests */,
+				E03393042CF3FBE5006B03BE /* EventoriasTests */,
 				E0E52EE02CBD1CD7004E7E1D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -122,6 +154,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				E03393042CF3FBE5006B03BE /* EventoriasTests */,
 				E0E52EE12CBD1CD7004E7E1D /* Eventorias */,
 			);
 			name = Eventorias;
@@ -147,9 +180,6 @@
 			);
 			dependencies = (
 				E0E52EF12CBD1CDE004E7E1D /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				E0E52EF22CBD1CDE004E7E1D /* EventoriasTests */,
 			);
 			name = EventoriasTests;
 			packageProductDependencies = (

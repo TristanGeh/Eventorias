@@ -23,21 +23,12 @@ struct ValidateButtonView: View {
                 return
             }
             
-            eventListViewModel.uploadImage(image: image) { result in
-                switch result {
-                case .success(let imageUrl):
-                    eventListViewModel.createEvent(with: title, description: description, date: date, time: time, address: address, imageUrl: imageUrl) { eventResult in
-                        switch eventResult {
-                        case .success:
-                            print("Event successfully created")
-                        case .failure(let error):
-                            print("Failed to create event: \(error.localizedDescription)")
-                        }
-                    }
-                case .failure(let error):
-                    print("Failed to upload image: \(error.localizedDescription)")
-                }
-            }
+            eventListViewModel.addEvent(title: title,
+                                        description: description,
+                                        date: date,
+                                        time: time,
+                                        address: address,
+                                        image: image)
         } label: {
             Text("Validate")
                 .frame(maxWidth: .infinity)

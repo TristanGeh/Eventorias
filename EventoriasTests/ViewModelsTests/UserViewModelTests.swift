@@ -7,167 +7,167 @@ import XCTest
 @testable import Eventorias
 
 final class UserViewModelTests: XCTestCase {
+    
     var userViewModel: UserViewModel!
     var mockUserService: MockUserService!
+    var userRepository: MockUserRepository!
     
     override func setUp() {
         super.setUp()
         mockUserService = MockUserService()
-        mockUserService.usersDatabase["mock_uid"] = User(uid: "mock_uid", name: "Mock User" , notification: false, profilPicture: "gs://eventorias.appspot.com", email: "mock@user.com")
-        userViewModel = UserViewModel(userService: mockUserService)
+        userRepository = MockUserRepository()
+        userViewModel = UserViewModel(userRepository: userRepository)
+        let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "", email: "test@example.com")
+        mockUserService.user = user
+        userViewModel.user = user
     }
     
     override func tearDown() {
         userViewModel = nil
         mockUserService = nil
+        userRepository = nil
         super.tearDown()
     }
     
-    // MARK: - Tests
+    // MARK: - Tests for fetchUser
     
     func testFetchUserSuccess() {
-        mockUserService.shouldSucceed = true
-        let expectation = self.expectation(description: "Fetch user success")
+        // Given
+        userRepository.shouldFail = false
+        let expectedUser = User(uid: "123", name: "Test User", notification: true, profilPicture: "https://mockurl.com/profile.jpg", email: "test@example.com")
+        userRepository.user = expectedUser
         
+        // When
         userViewModel.fetchUser()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            XCTAssertNotNil(self.userViewModel.user)
-            XCTAssertEqual(self.userViewModel.user?.name, "Mock User")
-            XCTAssertEqual(self.userViewModel.nameToEdit, "Mock User")
-            XCTAssertEqual(self.userViewModel.emailToEdit, "mock@user.com")
-            XCTAssertEqual(self.userViewModel.notificationEnabled, false)
-            expectation.fulfill()
-        }
-        
-        waitForExpectations(timeout: 1.0)
+        // Then
+        XCTAssertEqual(self.userViewModel.user?.uid, expectedUser.uid, "Expected user ID to match")
+        XCTAssertEqual(self.userViewModel.user?.name, expectedUser.name, "Expected user name to match")
+        XCTAssertEqual(self.userViewModel.user?.email, expectedUser.email, "Expected user email to match")
     }
-    
+
     func testFetchUserFailure() {
-        mockUserService.shouldSucceed = false
-        let expectation = self.expectation(description: "Fetch user failure")
+        // Given
+        userRepository.shouldFail = true
         
+        // When
         userViewModel.fetchUser()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            XCTAssertNil(self.userViewModel.user)
-            XCTAssertNotNil(self.userViewModel.errorMsg)
-            XCTAssertEqual(self.userViewModel.errorMsg, "Failed to update user info")
-            expectation.fulfill()
-        }
-        
-        waitForExpectations(timeout: 1.0)
+        // Then
+        XCTAssertEqual(self.userViewModel.errorMsg, "Failed to update user info", "Expected failure message for fetching user")
     }
+
+    
+    // MARK: - Tests for updateUserInfo
     
     func testUpdateUserInfoSuccess() {
-        mockUserService.shouldSucceed = true
-        let expectation = self.expectation(description: "Update user info success")
-        
+        // Given
+        userRepository.shouldFail = false
+        let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "", email: "test@example.com")
+        userViewModel.user = user
+        print("\(user)")
         userViewModel.nameToEdit = "Updated Name"
-        userViewModel.emailToEdit = "updated@user.com"
+        userViewModel.emailToEdit = "updated@example.com"
         
+        // When
         userViewModel.updateUserInfo()
+        print("\(user)")
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            XCTAssertEqual(self.mockUserService.usersDatabase["mock_uid"]?.name, "Updated Name")
-            XCTAssertEqual(self.mockUserService.usersDatabase["mock_uid"]?.email, "updated@user.com")
-            XCTAssertEqual(self.userViewModel.user?.name, "Updated Name")
-            XCTAssertEqual(self.userViewModel.user?.email, "updated@user.com")
-            expectation.fulfill()
-        }
-        
-        waitForExpectations(timeout: 1.0)
+        // Then
+        XCTAssertEqual(userViewModel.user?.name, "Updated Name", "Expected user name to be updated")
+        XCTAssertEqual(userViewModel.user?.email, "updated@example.com", "Expected user email to be updated")
     }
     
     func testUpdateUserInfoFailure() {
-        mockUserService.shouldSucceed = false
-        let expectation = self.expectation(description: "Update user info failure")
-        
+        // Given
+        userRepository.shouldFail = true
+        let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "", email: "test@example.com")
+        userViewModel.user = user
+        print("\(user)")
         userViewModel.nameToEdit = "Updated Name"
-        userViewModel.emailToEdit = "updated@user.com"
+        userViewModel.emailToEdit = "updated@example.com"
         
+        // When
         userViewModel.updateUserInfo()
+        print("\(user)")
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            XCTAssertNotNil(self.userViewModel.errorMsg)
-            XCTAssertEqual(self.userViewModel.errorMsg, "Failed to update user info")
-            expectation.fulfill()
-        }
-        
-        waitForExpectations(timeout: 1.0)
+        // Then
+        XCTAssertEqual(userViewModel.errorMsg, "Failed to update user info", "Expected failure message when updating user info fails")
     }
+    
+    // MARK: - Tests for updateUserNotificationPreference
     
     func testUpdateUserNotificationPreferenceSuccess() {
-        mockUserService.shouldSucceed = true
-        let expectation = self.expectation(description: "Update user notification preference success")
+        // Given
+        userRepository.shouldFail = false
+        let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "https://mockurl.com/profilepicture.jpg", email: "test@example.com")
         
+        userRepository.user = user
+        
+        userViewModel.user = user
         userViewModel.notificationEnabled = true
+        
+        // When
         userViewModel.updateUserNotificationPreference()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            XCTAssertEqual(self.mockUserService.usersDatabase["mock_uid"]?.notification, true)
-            XCTAssertEqual(self.userViewModel.user?.notification, true)
-            expectation.fulfill()
-        }
-        
-        waitForExpectations(timeout: 1.0)
+        // Then
+        XCTAssertTrue(userRepository.user?.notification ?? false, "Expected notification preference to be updated to true")
     }
+
     
     func testUpdateUserNotificationPreferenceFailure() {
-        mockUserService.shouldSucceed = false
-        let expectation = self.expectation(description: "Update user notification preference failure")
-        
+        // Given
+        userRepository.shouldFail = true
+        let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "https://mockurl.com/profilepicture.jpg", email: "test@example.com")
+        userViewModel.user = user
+        print("\(user)")
         userViewModel.notificationEnabled = true
+        
+        // When
         userViewModel.updateUserNotificationPreference()
+        print("\(user)")
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            XCTAssertNotNil(self.userViewModel.errorMsg)
-            XCTAssertEqual(self.userViewModel.errorMsg, "Failed to update user notification preference")
-            expectation.fulfill()
-        }
-        
-        waitForExpectations(timeout: 1.0)
+        // Then
+        XCTAssertEqual(userViewModel.errorMsg, "Failed to update user notification preference", "Expected failure message when updating notification preference fails")
     }
     
-    /*func testUpdateUserImageSuccess() {
-        mockUserService.shouldSucceed = true
-        let expectation = self.expectation(description: "Update user image success")
+    // MARK: - Tests for updateUserImage
+    
+    func testUpdateUserImageSuccess() {
+        // Given
+        userRepository.shouldFail = false
+        let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "", email: "test@example.com")
+        userRepository.user = user
         
-        guard let image = UIImage(named: "testImage", in: Bundle(for: type(of: self)), compatibleWith: nil) else {
-            XCTFail("Failed to load test image")
+        userViewModel.user = user
+        
+        // Charger l'image de test depuis les assets du projet
+        guard let testImage = UIImage(named: "testImage") else {
+            XCTFail("Expected testImage to be found in assets")
             return
         }
-        userViewModel.selectedImage = image
+        
+        userViewModel.selectedImage = testImage
+        
+        // When
         userViewModel.updateUserImage()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            XCTAssertEqual(self.mockUserService.usersDatabase["mock_uid"]?.profilPicture, "updated_mock_image_url")
-            expectation.fulfill()
-        }
-        
-        waitForExpectations(timeout: 1.0)
+        // Then
+        XCTAssertEqual(userRepository.user?.profilPicture, "https://mockurl.com/profilepicture.jpg", "Expected profile picture URL to be updated")
     }
+
     
     func testUpdateUserImageFailure() {
-        mockUserService.shouldSucceed = false
-        let expectation = self.expectation(description: "Update user image failure")
+        // Given
+        userRepository.shouldFail = true
+        let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "", email: "test@example.com")
+        userViewModel.user = user
+        userViewModel.selectedImage = UIImage()
         
-        guard let image = UIImage(named: "testImage", in: Bundle(for: type(of: self)), compatibleWith: nil) else {
-            XCTFail("Failed to load test image")
-            return
-        }
-        userViewModel.selectedImage = image
+        // When
         userViewModel.updateUserImage()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            XCTAssertNotNil(self.userViewModel.errorMsg)
-            XCTAssertEqual(self.userViewModel.errorMsg, "Failed to update user image")
-            expectation.fulfill()
-        }
-        
-        waitForExpectations(timeout: 1.0)
-    }*/
+        // Then
+        XCTAssertEqual(userViewModel.errorMsg, "Failed to update user image", "Expected failure message when updating user image fails")
+    }
 }
-
-
-

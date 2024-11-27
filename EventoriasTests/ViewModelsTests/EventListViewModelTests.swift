@@ -7,13 +7,15 @@ import XCTest
 @testable import Eventorias
 
 final class EventListViewModelTests: XCTestCase {
+    
     var eventListViewModel: EventListViewModel!
     var mockEventService: MockEventService!
     
     override func setUp() {
         super.setUp()
         mockEventService = MockEventService()
-        eventListViewModel = EventListViewModel(eventService: mockEventService)
+        let mockEventRepository = EventRepository(eventProvider: mockEventService)
+        eventListViewModel = EventListViewModel(eventRepository: mockEventRepository)
     }
     
     override func tearDown() {
@@ -22,146 +24,99 @@ final class EventListViewModelTests: XCTestCase {
         super.tearDown()
     }
     
-    // MARK: - Tests
+    // MARK: - Tests for fetchEvents
     
     func testFetchEventsSuccess() {
-        mockEventService.shouldSucceed = true
-        let event = EventRaw(
-            id: "1",
-            title: "Test Event",
-            description: "This is a test event",
-            date: "October 31, 2024",
-            time: "10:00 AM",
-            createdBy: "mockUser",
-            location: "Test Location",
-            imageUrl: "gs://eventorias.appspot.com"
-        )
-        mockEventService.eventsDatabase[event.id] = event
+        // Given
+        mockEventService.shouldFail = false
+        mockEventService.events = [
+            EventRaw(id: "1", title: "Event 1", description: "Description 1", date: "December 12, 2024", time: "10:00 AM", createdBy: "User1", location: "Location 1", imageUrl: "https://mockurl.com/event1.jpg")
+        ]
         
-        let expectation = self.expectation(description: "Fetch events success")
+        let expectation = self.expectation(description: "Events should be fetched successfully")
         
+        // When
         eventListViewModel.fetchEvents()
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertFalse(self.eventListViewModel.events.isEmpty)
-            XCTAssertNil(self.eventListViewModel.errorMsg)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            // Then
+            XCTAssertEqual(self.eventListViewModel.events.count, 1, "Expected one event to be fetched successfully")
+            XCTAssertEqual(self.eventListViewModel.events.first?.title, "Event 1", "Expected event title to be 'Event 1'")
             expectation.fulfill()
         }
         
-        waitForExpectations(timeout: 2.0)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testFetchEventsFailure() {
-        mockEventService.shouldSucceed = false
-        let expectation = self.expectation(description: "Fetch events failure")
+        // Given
+        mockEventService.shouldFail = true
         
+        let expectation = self.expectation(description: "Events fetching should fail")
+        
+        // When
         eventListViewModel.fetchEvents()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertTrue(self.eventListViewModel.events.isEmpty)
-            XCTAssertNotNil(self.eventListViewModel.errorMsg)
+            // Then
+            XCTAssertEqual(self.eventListViewModel.errorMsg, "Failed to fetch events: Failed to fetch events", "Expected failure message for fetching events")
             expectation.fulfill()
         }
         
-        waitForExpectations(timeout: 1.0)
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
+    // MARK: - Tests for addEvent
+    
     func testAddEventSuccess() {
-        mockEventService.shouldSucceed = true
-        let expectation = self.expectation(description: "Add event success")
+        // Given
+        mockEventService.shouldFail = false
+        let title = "Test Event"
+        let description = "Event Description"
+        let date = Date()
+        let time = Date()
+        let address = "Test Address"
         
-        let newEventRaw = EventRaw(
-            id: "1",
-            title: "Test Event",
-            description: "This is a test event",
-            date: "October 31, 2024",
-            time: "10:00 AM",
-            createdBy: "mockUser",
-            location: "Test Location",
-            imageUrl: "gs://eventorias.appspot.com"
-        )
-        
-        eventListViewModel.addEvent(event: newEventRaw)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertFalse(self.eventListViewModel.events.isEmpty)
-            XCTAssertNil(self.eventListViewModel.errorMsg)
-            expectation.fulfill()
+        // Charger l'image de test depuis les assets du projet
+        guard let testImage = UIImage(named: "testImage") else {
+            XCTFail("Expected testImage to be found in assets")
+            return
         }
+                
+        // When
+        eventListViewModel.addEvent(title: title, description: description, date: date, time: time, address: address, image: testImage)
         
-        waitForExpectations(timeout: 1.0)
+        
+        // Then
+        XCTAssertNil(self.eventListViewModel.errorMsg, "No error message expected for successful addEvent")
     }
     
     func testAddEventFailure() {
-        mockEventService.shouldSucceed = false
-        let expectation = self.expectation(description: "Add event failure")
+        // Given
+        mockEventService.shouldFail = true
+        let title = "Test Event"
+        let description = "Event Description"
+        let date = Date()
+        let time = Date()
+        let address = "Test Address"
         
-        let newEventRaw = EventRaw(
-            id: "1",
-            title: "Test Event",
-            description: "This is a test event",
-            date: "October 31, 2024",
-            time: "10:00 AM",
-            createdBy: "mockUser",
-            location: "Test Location",
-            imageUrl: "gs://eventorias.appspot.com"
-        )
+        // Charger l'image de test depuis les assets du projet
+        guard let testImage = UIImage(named: "testImage") else {
+            XCTFail("Expected testImage to be found in assets")
+            return
+        }
         
-        eventListViewModel.addEvent(event: newEventRaw)
+        let expectation = self.expectation(description: "Adding event should fail")
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertTrue(self.eventListViewModel.events.isEmpty)
-            XCTAssertNotNil(self.eventListViewModel.errorMsg)
+        // When
+        eventListViewModel.addEvent(title: title, description: description, date: date, time: time, address: address, image: testImage)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            // Then
+            XCTAssertEqual(self.eventListViewModel.errorMsg, "Failed to create event: Failed to add event", "Expected failure message for adding event")
             expectation.fulfill()
         }
         
-        waitForExpectations(timeout: 1.0)
+        waitForExpectations(timeout: 1, handler: nil)
     }
-    
-    /*func testUploadImageSuccess() {
-        let mockEventService = MockEventService()
-        mockEventService.shouldSucceed = true
-        let expectation = self.expectation(description: "Upload image success")
-        guard let image = UIImage(named: "testImage", in: Bundle(for: type(of: self)), compatibleWith: nil) else {
-            XCTFail("Failed to load test image")
-            return
-        }
-        
-        let eventListViewModel = EventListViewModel(eventService: mockEventService)
-        eventListViewModel.uploadImage(image: image) { result in
-            switch result {
-            case .success(let imageUrl):
-                XCTAssertFalse(imageUrl.isEmpty)
-                expectation.fulfill()
-            case .failure:
-                XCTFail("Expected success but got failure")
-            }
-        }
-        
-        waitForExpectations(timeout: 2.0)
-    }
-    
-    func testUploadImageFailure() {
-        let mockEventService = MockEventService()
-        mockEventService.shouldSucceed = false
-        let expectation = self.expectation(description: "Upload image failure")
-        guard let image = UIImage(named: "testImage", in: Bundle(for: type(of: self)), compatibleWith: nil) else {
-            XCTFail("Failed to load test image")
-            return
-        }
-        
-        let eventListViewModel = EventListViewModel(eventService: mockEventService)
-        eventListViewModel.uploadImage(image: image) { result in
-            switch result {
-            case .success:
-                XCTFail("Expected failure but got success")
-            case .failure(let error):
-                XCTAssertNotNil(error)
-                expectation.fulfill()
-            }
-        }
-        
-        waitForExpectations(timeout: 2.0)
-    }*/
 }
-

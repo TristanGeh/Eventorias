@@ -1,24 +1,24 @@
 //
-//  EventServiceTests.swift
+//  EventRepsitoryTests.swift
 //  EventoriasTests
 //
 
 import XCTest
 @testable import Eventorias
 
-final class EventServiceTests: XCTestCase {
+final class EventRepsitoryTests: XCTestCase {
     
-    var eventService: EventService!
+    var eventRepository: EventRepository!
     var mockEventService: MockEventService!
     
     override func setUp() {
         super.setUp()
         mockEventService = MockEventService()
-        eventService = EventService()
+        eventRepository = EventRepository(eventProvider: mockEventService)
     }
     
     override func tearDown() {
-        eventService = nil
+        eventRepository = nil
         mockEventService = nil
         super.tearDown()
     }
@@ -36,7 +36,7 @@ final class EventServiceTests: XCTestCase {
         let image = UIImage()
         
         // When
-        mockEventService.addEvent(title: title, description: description, date: date, time: time, address: address, image: image) { result in
+        eventRepository.addEvent(title: title, description: description, date: date, time: time, address: address, image: image) { result in
             // Then
             switch result {
             case .success:
@@ -58,49 +58,13 @@ final class EventServiceTests: XCTestCase {
         let image = UIImage()
         
         // When
-        mockEventService.addEvent(title: title, description: description, date: date, time: time, address: address, image: image) { result in
+        eventRepository.addEvent(title: title, description: description, date: date, time: time, address: address, image: image) { result in
             // Then
             switch result {
             case .success:
                 XCTFail("Expected failure but got success")
             case .failure(let error):
                 XCTAssertEqual(error.localizedDescription, "Failed to add event", "Expected failure message for adding event")
-            }
-        }
-    }
-    
-    // MARK: - Tests for uploadImage
-    
-    func testUploadImageSuccess() {
-        // Given
-        mockEventService.shouldFail = false
-        let image = UIImage()
-        
-        // When
-        mockEventService.uploadImage(image: image) { result in
-            // Then
-            switch result {
-            case .success(let imageUrl):
-                XCTAssertEqual(imageUrl, "https://mockurl.com/eventimage.jpg", "Expected mock image URL on success")
-            case .failure:
-                XCTFail("Expected success but got failure")
-            }
-        }
-    }
-    
-    func testUploadImageFailure() {
-        // Given
-        mockEventService.shouldFail = true
-        let image = UIImage()
-        
-        // When
-        mockEventService.uploadImage(image: image) { result in
-            // Then
-            switch result {
-            case .success:
-                XCTFail("Expected failure but got success")
-            case .failure(let error):
-                XCTAssertEqual(error.localizedDescription, "Failed to upload image", "Expected failure message for uploading image")
             }
         }
     }
@@ -115,7 +79,7 @@ final class EventServiceTests: XCTestCase {
         ]
         
         // When
-        mockEventService.fetchEvents { result in
+        eventRepository.fetchEvents { result in
             // Then
             switch result {
             case .success(let events):
@@ -132,7 +96,7 @@ final class EventServiceTests: XCTestCase {
         mockEventService.shouldFail = true
         
         // When
-        mockEventService.fetchEvents { result in
+        eventRepository.fetchEvents { result in
             // Then
             switch result {
             case .success:
@@ -143,39 +107,29 @@ final class EventServiceTests: XCTestCase {
         }
     }
     
-    // MARK: - Tests for fetchUserProfilPicture
+    // MARK: - Tests for convertFirebaseURL
     
-    func testFetchUserProfilPictureSuccess() {
+    func testConvertFirebaseURLSuccess() {
         // Given
         mockEventService.shouldFail = false
-        let userID = "MockUserID"
+        let gsUrl = "gs://mockbucket/path/to/resource"
         
         // When
-        mockEventService.fetchUserProfilPicture(forUID: userID) { result in
+        eventRepository.convertFirebaseURL(gsUrl) { convertedUrl in
             // Then
-            switch result {
-            case .success(let profilePictureUrl):
-                XCTAssertEqual(profilePictureUrl, "gs://eventorias.appspot.com", "Expected mock profile picture URL on success")
-            case .failure:
-                XCTFail("Expected success but got failure")
-            }
+            XCTAssertEqual(convertedUrl, "https://mockurl.com/convertedurl.jpg", "Expected URL to be converted successfully")
         }
     }
     
-    func testFetchUserProfilPictureFailure() {
+    func testConvertFirebaseURLFailure() {
         // Given
         mockEventService.shouldFail = true
-        let userID = "MockUserID"
+        let gsUrl = "gs://mockbucket/path/to/resource"
         
         // When
-        mockEventService.fetchUserProfilPicture(forUID: userID) { result in
+        eventRepository.convertFirebaseURL(gsUrl) { convertedUrl in
             // Then
-            switch result {
-            case .success:
-                XCTFail("Expected failure but got success")
-            case .failure(let error):
-                XCTAssertEqual(error.localizedDescription, "Failed to fetch profile picture", "Expected failure message for fetching profile picture")
-            }
+            XCTAssertEqual(convertedUrl, "", "Expected empty URL on failure")
         }
     }
 }

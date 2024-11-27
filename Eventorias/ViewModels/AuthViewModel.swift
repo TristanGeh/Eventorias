@@ -12,9 +12,9 @@ class AuthViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var isConnected: Bool = false
     
-    private let authService: AuthServiceProtocol
+    private let authService: AuthManager
     
-    init(authService: AuthServiceProtocol = AuthService.shared) {
+    init(authService: AuthManager = AuthRepository(authProvider: AuthService())) {
         self.authService = authService
     }
     
@@ -31,32 +31,16 @@ class AuthViewModel: ObservableObject {
         }
         
         authService.signUp(email: email, password: password, name: name) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let uid):
-                    let userService = UserService()
-                    let newUser = User(uid: uid, name: self.name, notification: false, profilPicture: "", email: self.email)
-                    
-                    userService.updateUserInfo(user: newUser) { userResult in
-                        DispatchQueue.main.async {
-                            switch userResult {
-                            case .success:
-                                self.errorMessage = "Account created successfully!"
-                                self.isConnected = true
-                            case .failure(let error):
-                                self.errorMessage = "Account created but failed to save user info: \(error.localizedDescription)"
-                            }
-                        }
-                    }
-                    
-                case .failure(let error):
-                    self.errorMessage = error.localizedDescription
-                    self.isConnected = false
-                }
+            switch result {
+            case .success:
+                self.errorMessage = "Account created successfully"
+                self.isConnected = true
+            case .failure(let error):
+                self.errorMessage = "An error occured while try create Account: \(error.localizedDescription)"
             }
         }
     }
-
+    
     
     func login() {
         guard isValidEmail(email) else {
@@ -64,15 +48,13 @@ class AuthViewModel: ObservableObject {
             return
         }
         authService.login(email: email, password: password) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self.errorMessage =  "Logged successfully !"
-                    self.isConnected = true
-                case .failure(let error):
-                    self.errorMessage = error.localizedDescription
-                    self.isConnected = false
-                }
+            switch result {
+            case .success:
+                self.errorMessage =  "Logged successfully !"
+                self.isConnected = true
+            case .failure(let error):
+                self.errorMessage = error.localizedDescription
+                self.isConnected = false
             }
         }
     }

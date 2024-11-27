@@ -17,32 +17,26 @@ class UserViewModel: ObservableObject {
     @Published var showingImagePicker: Bool = false
     @Published var errorMsg: String?
     
-    private let userService: UserServiceProtocol
+    private let userRepository: UserManager
     
-    init(userService: UserServiceProtocol = UserService()) {
-        self.userService = userService
+    init(userRepository: UserManager = UserRepository()) {
+        self.userRepository = userRepository
     }
     
     func fetchUser() {
-        guard let uid = Auth.auth().currentUser?.uid else {
-            self.errorMsg = "Failed to fetch user"
-            return
-        }
-        userService.fetchUser(withID: uid) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let user):
-                    self.convertFirebaseURL(user.profilPicture) { convertedUrl in
-                        var updatedUser = user
-                        updatedUser.profilPicture = convertedUrl
-                        self.user = updatedUser
-                        self.nameToEdit = user.name
-                        self.emailToEdit = user.email
-                        self.notificationEnabled = user.notification
-                    }
-                case .failure:
-                    self.errorMsg = "Failed to update user info"
+        userRepository.fetchUser() { result in
+            switch result {
+            case .success(let user):
+                self.userRepository.convertFirebaseURL(user.profilPicture) { convertedUrl in
+                    var updatedUser = user
+                    updatedUser.profilPicture = convertedUrl
+                    self.user = updatedUser
+                    self.nameToEdit = user.name
+                    self.emailToEdit = user.email
+                    self.notificationEnabled = user.notification
                 }
+            case .failure:
+                self.errorMsg = "Failed to update user info"
             }
         }
     }
@@ -56,15 +50,13 @@ class UserViewModel: ObservableObject {
         updatedUser.name = nameToEdit
         updatedUser.email = emailToEdit
         
-        userService.updateUserInfo(user: updatedUser) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self.user = updatedUser
-                    print("User information updated successfully")
-                case .failure(let error):
-                    self.errorMsg = error.localizedDescription
-                }
+        userRepository.updateUserInfo(user: updatedUser) { result in
+            switch result {
+            case .success:
+                self.user = updatedUser
+                print("User information updated successfully")
+            case .failure(let error):
+                self.errorMsg = error.localizedDescription
             }
         }
     }
@@ -76,16 +68,15 @@ class UserViewModel: ObservableObject {
         }
         
         updatedUser.notification = notificationEnabled
+        print("Updating notificationEnabled to: \(notificationEnabled)")
         
-        userService.updateUserNotificationPreference(user: updatedUser, enabled: notificationEnabled) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self.user = updatedUser
-                    print("User notification preference updated successfully")
-                case .failure:
-                    self.errorMsg = "Failed to update user notification preference"
-                }
+        userRepository.updateUserNotificationPreference(user: updatedUser, enabled: notificationEnabled) { result in
+            switch result {
+            case .success:
+                self.user = updatedUser
+                print("User notification preference updated successfully")
+            case .failure:
+                self.errorMsg = "Failed to update user notification preference"
             }
         }
     }
@@ -95,27 +86,13 @@ class UserViewModel: ObservableObject {
             self.errorMsg = "Failed to update user image"
             return
         }
-        userService.updateUserImage(user: updatedUser, image: image) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success:
-                    self.fetchUser()
-                    print("User profile picture updated successfully")
-                case .failure(let error):
-                    self.errorMsg = error.localizedDescription
-                }
-            }
-        }
-    }
-    
-    private func convertFirebaseURL(_ gsUrl: String, completion: @escaping (String) -> Void) {
-        let storageRef = Storage.storage().reference(forURL: gsUrl)
-        storageRef.downloadURL { url, error in
-            if let error = error {
-                print("Erreur lors de la récupération de l'URL: \(error.localizedDescription)")
-                completion("")
-            } else if let url = url {
-                completion(url.absoluteString)
+        userRepository.updateUserImage(user: updatedUser, image: image) { result in
+            switch result {
+            case .success:
+                self.fetchUser()
+                print("User profile picture updated successfully")
+            case .failure(let error):
+                self.errorMsg = error.localizedDescription
             }
         }
     }

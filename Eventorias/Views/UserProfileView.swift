@@ -90,7 +90,7 @@ struct UserProfileView: View {
 }
 
 #Preview {
-    @Previewable @State var viewModel = UserViewModel()
+    @Previewable @State var viewModel = UserViewModel(userRepository: UserRepository())
     UserProfileView()
         .environmentObject(viewModel)
 }

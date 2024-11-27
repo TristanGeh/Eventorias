@@ -7,20 +7,27 @@ import Foundation
 import FirebaseCore
 import FirebaseFirestore
 import FirebaseStorage
+import FirebaseAuth
 
-class UserService: UserServiceProtocol {
+
+class UserService: UserProvider {
     
     private let db = Firestore.firestore()
     private let storage = Storage.storage()
     
-    func fetchUser(withID uid: String, completion: @escaping (Result<User, Error>) -> Void) {
-        db.collection("Users").document(uid).getDocument { document, error in
+    func fetchUser(completion: @escaping (Result<User, Error>) -> Void) {
+        guard let user = Auth.auth().currentUser else {
+            completion(.failure(NSError(domain: "NoUser", code: 401, userInfo: [NSLocalizedDescriptionKey: "User not logged"])))
+            return
+        }
+        
+        db.collection("Users").document(user.uid).getDocument { document, error in
             if let error = error {
                 completion(.failure(error))
                 print("Erreur lors de la récupération du document utilisateur : \(error.localizedDescription)")
             } else if let document = document, document.exists {
                 let data = document.data()!
-                let user = User(uid: uid,
+                let user = User(uid: user.uid,
                                 name: data["name"] as? String ?? "",
                                 notification: data["notification"] as? Bool ?? false,
                                 profilPicture: data["profilPicture"] as? String ?? "",
@@ -95,6 +102,18 @@ class UserService: UserServiceProtocol {
                         }
                     }
                 }
+            }
+        }
+    }
+    
+    func convertFirebaseURL(_ gsUrl: String, completion: @escaping (String) -> Void) {
+        let storageRef = Storage.storage().reference(forURL: gsUrl)
+        storageRef.downloadURL { url, error in
+            if let error = error {
+                print("Erreur lors de la récupération de l'URL: \(error.localizedDescription)")
+                completion("")
+            } else if let url = url {
+                completion(url.absoluteString)
             }
         }
     }

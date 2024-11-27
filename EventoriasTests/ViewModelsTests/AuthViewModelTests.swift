@@ -7,109 +7,115 @@ import XCTest
 @testable import Eventorias
 
 final class AuthViewModelTests: XCTestCase {
+    
     var authViewModel: AuthViewModel!
-    var mockAuthService: MockAuthService!
-
+    var mockAuthProvider: MockFirebaseAuthProvider!
+    var authRepository: MockAuthRepository!
+    
+    
     override func setUp() {
         super.setUp()
-        mockAuthService = MockAuthService()
-        authViewModel = AuthViewModel(authService: mockAuthService)
+        mockAuthProvider = MockFirebaseAuthProvider()
+        authRepository = MockAuthRepository()
+        authViewModel = AuthViewModel(authService: authRepository)
     }
-
+    
     override func tearDown() {
         authViewModel = nil
-        mockAuthService = nil
+        mockAuthProvider = nil
+        authRepository = nil
         super.tearDown()
     }
-
-    // MARK: - Tests
-
-    func testIsValidEmail() {
-        XCTAssertTrue(authViewModel.isValidEmail("test@example.com"))
-        XCTAssertFalse(authViewModel.isValidEmail("invalid-email"))
-        XCTAssertFalse(authViewModel.isValidEmail("@example.com"))
-        XCTAssertFalse(authViewModel.isValidEmail("test@.com"))
-    }
-
+    
+    // MARK: - Tests for signUp
+    
     func testSignUpSuccess() {
-        mockAuthService.shouldSucceed = true
-        let expectation = self.expectation(description: "Sign up success")
-
+        // Given
+        mockAuthProvider.shouldSucceed = true
         authViewModel.email = "test@example.com"
         authViewModel.password = "password123"
         authViewModel.name = "Test User"
-
+        
+        // When
         authViewModel.signUp()
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertEqual(self.authViewModel.errorMessage, "Account created successfully!")
-            XCTAssertTrue(self.authViewModel.isConnected)
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 1.0)
+        
+        // Then
+        XCTAssertEqual(authViewModel.errorMessage, "Account created successfully", "Expected success message for account creation")
+        XCTAssertTrue(authViewModel.isConnected, "User should be connected after successful sign up")
     }
-
+    
     func testSignUpFailure() {
-        mockAuthService.shouldSucceed = false
-        let expectation = self.expectation(description: "Sign up failure")
-
+        // Given
+        authRepository.shouldSucceed = false
         authViewModel.email = "test@example.com"
         authViewModel.password = "password123"
         authViewModel.name = "Test User"
-
+        
+        // When
         authViewModel.signUp()
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertEqual(self.authViewModel.errorMessage, "Mock sign-up error")
-            XCTAssertFalse(self.authViewModel.isConnected)
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 1.0)
+        
+        // Then
+        XCTAssertEqual(authViewModel.errorMessage, "An error occured while try create Account: Mock sign-up error", "Expected failure message for account creation")
+        XCTAssertFalse(authViewModel.isConnected, "User should not be connected after failed sign up")
     }
-
+    
+    func testSignUpInvalidEmail() {
+        // Given
+        authViewModel.email = "invalid-email"
+        authViewModel.password = "password123"
+        authViewModel.name = "Test User"
+        
+        // When
+        authViewModel.signUp()
+        
+        // Then
+        XCTAssertEqual(authViewModel.errorMessage, "Invalid email format", "Expected invalid email format message")
+        XCTAssertFalse(authViewModel.isConnected, "User should not be connected with invalid email")
+    }
+    
+    // MARK: - Tests for login
+    
     func testLoginSuccess() {
-            mockAuthService.shouldSucceed = true
-            mockAuthService.usersDatabase["test@example.com"] = ["uid": "mock_uid"] 
-            let expectation = self.expectation(description: "Login success")
-
-            authViewModel.email = "test@example.com"
-            authViewModel.password = "password123"
-
-            authViewModel.login()
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                XCTAssertEqual(self.authViewModel.errorMessage, "Logged successfully !")
-                XCTAssertTrue(self.authViewModel.isConnected)
-                expectation.fulfill()
-            }
-
-            waitForExpectations(timeout: 1.0)
-        }
-
-    func testLoginFailure() {
-        mockAuthService.shouldSucceed = false
-        let expectation = self.expectation(description: "Login failure")
-
+        // Given
+        authRepository.shouldSucceed = true
+        let testUser = MockUserForLogin(uid: "123", email: "test@example.com", password: "password123")
+        authRepository.usersDatabase["123"] = testUser
         authViewModel.email = "test@example.com"
         authViewModel.password = "password123"
-
+        
+        
+        // When
         authViewModel.login()
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertEqual(self.authViewModel.errorMessage, "Mock login error")
-            XCTAssertFalse(self.authViewModel.isConnected)
-            expectation.fulfill()
-        }
-
-        waitForExpectations(timeout: 1.0)
+        
+        // Then
+        XCTAssertEqual(self.authViewModel.errorMessage, "Logged successfully !", "Expected success message for login")
+        XCTAssertTrue(self.authViewModel.isConnected, "User should be connected after successful login")
     }
-
-    func testInvalidEmail() {
+    
+    func testLoginFailure() {
+        // Given
+        authRepository.shouldSucceed = false
+        authViewModel.email = "test@example.com"
+        authViewModel.password = "password123"
+        
+        // When
+        authViewModel.login()
+        
+        // Then
+        XCTAssertEqual(self.authViewModel.errorMessage, "Mock login error", "Expected failure message for login")
+        XCTAssertFalse(self.authViewModel.isConnected, "User should not be connected after failed login")
+    }
+    
+    func testLoginInvalidEmail() {
+        // Given
         authViewModel.email = "invalid-email"
-        authViewModel.signUp()
-        XCTAssertEqual(authViewModel.errorMessage, "Invalid email format")
-        XCTAssertFalse(authViewModel.isConnected)
+        authViewModel.password = "password123"
+        
+        // When
+        authViewModel.login()
+        
+        // Then
+        XCTAssertEqual(authViewModel.errorMessage, "Invalid email format", "Expected invalid email format message")
+        XCTAssertFalse(authViewModel.isConnected, "User should not be connected with invalid email")
     }
 }

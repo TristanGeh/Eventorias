@@ -1,26 +1,26 @@
 //
-//  UserServiceTests.swift
+//  UserRepsitoryTests.swift
 //  EventoriasTests
 //
 
 import XCTest
 @testable import Eventorias
 
-final class UserServiceTests: XCTestCase {
+final class UserRepositoryTests: XCTestCase {
     
-    var userService: UserService!
+    var userRepository: UserRepository!
     var mockUserService: MockUserService!
     
     override func setUp() {
         super.setUp()
-        userService = UserService()
         mockUserService = MockUserService()
+        userRepository = UserRepository(userProvider: mockUserService)
         let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "", email: "test@example.com")
         mockUserService.user = user
     }
     
     override func tearDown() {
-        userService = nil
+        userRepository = nil
         mockUserService = nil
         super.tearDown()
     }
@@ -33,10 +33,8 @@ final class UserServiceTests: XCTestCase {
         let expectedUser = User(uid: "123", name: "Test User", notification: true, profilPicture: "https://mockurl.com/profile.jpg", email: "test@example.com")
         mockUserService.user = expectedUser
         
-        let expectation = self.expectation(description: "fetchUserSuccess")
-        
         // When
-        mockUserService.fetchUser { result in
+        userRepository.fetchUser { result in
             // Then
             switch result {
             case .success(let user):
@@ -46,20 +44,15 @@ final class UserServiceTests: XCTestCase {
             case .failure:
                 XCTFail("Expected success but got failure")
             }
-            expectation.fulfill()
         }
-        
-        waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testFetchUserFailure() {
         // Given
         mockUserService.shouldFail = true
         
-        let expectation = self.expectation(description: "fetchUserFailure")
-        
         // When
-        mockUserService.fetchUser { result in
+        userRepository.fetchUser { result in
             // Then
             switch result {
             case .success:
@@ -67,10 +60,7 @@ final class UserServiceTests: XCTestCase {
             case .failure(let error):
                 XCTAssertEqual(error.localizedDescription, "Failed to fetch user", "Expected failure message for fetching user")
             }
-            expectation.fulfill()
         }
-        
-        waitForExpectations(timeout: 1, handler: nil)
     }
     
     // MARK: - Tests for updateUserInfo
@@ -81,12 +71,12 @@ final class UserServiceTests: XCTestCase {
         let user = User(uid: "123", name: "Updated User", notification: false, profilPicture: "", email: "updated@example.com")
         
         // When
-        mockUserService.updateUserInfo(user: user) { result in
+        userRepository.updateUserInfo(user: user) { result in
             // Then
             switch result {
             case .success:
-                XCTAssertEqual(self.mockUserService.user?.name, "Updated User", "Expected user name to be updated")
-                XCTAssertEqual(self.mockUserService.user?.email, "updated@example.com", "Expected user email to be updated")
+                XCTAssertEqual(user.name, "Updated User", "Expected user name to be updated")
+                XCTAssertEqual(user.email, "updated@example.com", "Expected user email to be updated")
             case .failure:
                 XCTFail("Expected success but got failure")
             }
@@ -99,7 +89,7 @@ final class UserServiceTests: XCTestCase {
         let user = User(uid: "123", name: "Updated User", notification: false, profilPicture: "", email: "updated@example.com")
         
         // When
-        mockUserService.updateUserInfo(user: user) { result in
+        userRepository.updateUserInfo(user: user) { result in
             // Then
             switch result {
             case .success:
@@ -116,10 +106,11 @@ final class UserServiceTests: XCTestCase {
         // Given
         mockUserService.shouldFail = false
         let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "", email: "test@example.com")
-        mockUserService.user = user // Assignez l'utilisateur au mock pour assurer la mise à jour
+        
+        let expectation = self.expectation(description: "Update notification preference should succeed")
         
         // When
-        mockUserService.updateUserNotificationPreference(user: user, enabled: true) { result in
+        userRepository.updateUserNotificationPreference(user: user, enabled: true) { result in
             // Then
             switch result {
             case .success:
@@ -127,7 +118,10 @@ final class UserServiceTests: XCTestCase {
             case .failure:
                 XCTFail("Expected success but got failure")
             }
+            expectation.fulfill()
         }
+        
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     func testUpdateUserNotificationPreferenceFailure() {
@@ -135,8 +129,10 @@ final class UserServiceTests: XCTestCase {
         mockUserService.shouldFail = true
         let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "", email: "test@example.com")
         
+        let expectation = self.expectation(description: "Update notification preference should fail")
+        
         // When
-        mockUserService.updateUserNotificationPreference(user: user, enabled: true) { result in
+        userRepository.updateUserNotificationPreference(user: user, enabled: true) { result in
             // Then
             switch result {
             case .success:
@@ -144,7 +140,10 @@ final class UserServiceTests: XCTestCase {
             case .failure(let error):
                 XCTAssertEqual(error.localizedDescription, "Failed to update user notification preference", "Expected failure message for updating user notification preference")
             }
+            expectation.fulfill()
         }
+        
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     // MARK: - Tests for updateUserImage
@@ -153,11 +152,17 @@ final class UserServiceTests: XCTestCase {
         // Given
         mockUserService.shouldFail = false
         let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "", email: "test@example.com")
-        mockUserService.user = user // Assurez-vous que l'utilisateur est présent dans le mock avant la mise à jour
-        let image = UIImage()
+        
+        // Charger l'image de test depuis les assets du projet
+        guard let testImage = UIImage(named: "testImage") else {
+            XCTFail("Expected testImage to be found in assets")
+            return
+        }
+        
+        let expectation = self.expectation(description: "Update user image should succeed")
         
         // When
-        mockUserService.updateUserImage(user: user, image: image) { result in
+        userRepository.updateUserImage(user: user, image: testImage) { result in
             // Then
             switch result {
             case .success:
@@ -165,7 +170,38 @@ final class UserServiceTests: XCTestCase {
             case .failure:
                 XCTFail("Expected success but got failure")
             }
+            expectation.fulfill()
         }
+        
+        waitForExpectations(timeout: 1, handler: nil)
+    }
+    
+    func testUpdateUserImageFailure() {
+        // Given
+        mockUserService.shouldFail = true
+        let user = User(uid: "123", name: "Test User", notification: false, profilPicture: "", email: "test@example.com")
+        
+        // Charger l'image de test depuis les assets du projet
+        guard let testImage = UIImage(named: "testImage") else {
+            XCTFail("Expected testImage to be found in assets")
+            return
+        }
+        
+        let expectation = self.expectation(description: "Update user image should fail")
+        
+        // When
+        userRepository.updateUserImage(user: user, image: testImage) { result in
+            // Then
+            switch result {
+            case .success:
+                XCTFail("Expected failure but got success")
+            case .failure(let error):
+                XCTAssertEqual(error.localizedDescription, "Failed to update user image", "Expected failure message for updating user image")
+            }
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 1, handler: nil)
     }
     
     // MARK: - Tests for convertFirebaseURL
@@ -173,25 +209,24 @@ final class UserServiceTests: XCTestCase {
     func testConvertFirebaseURLSuccess() {
         // Given
         mockUserService.shouldFail = false
-        let gsUrl = "gs://somebucket/somepath"
+        let gsUrl = "gs://mockbucket/path/to/resource"
         
         // When
-        mockUserService.convertFirebaseURL(gsUrl) { convertedUrl in
+        userRepository.convertFirebaseURL(gsUrl) { convertedUrl in
             // Then
-            XCTAssertEqual(convertedUrl, "https://mockurl.com/convertedurl.jpg", "Expected Firebase URL to be converted successfully")
+            XCTAssertEqual(convertedUrl, "https://mockurl.com/convertedurl.jpg", "Expected URL to be converted successfully")
         }
     }
     
     func testConvertFirebaseURLFailure() {
         // Given
         mockUserService.shouldFail = true
-        let gsUrl = "gs://somebucket/somepath"
+        let gsUrl = "gs://mockbucket/path/to/resource"
         
         // When
-        mockUserService.convertFirebaseURL(gsUrl) { convertedUrl in
+        userRepository.convertFirebaseURL(gsUrl) { convertedUrl in
             // Then
-            XCTAssertEqual(convertedUrl, "", "Expected failure to convert Firebase URL")
+            XCTAssertEqual(convertedUrl, "", "Expected empty URL on failure")
         }
     }
 }
-
