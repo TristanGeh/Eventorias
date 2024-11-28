@@ -10,7 +10,7 @@ struct CalendarView: View {
     
     
     var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+        LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(),spacing: 10)]) {
             ForEach(eventListViewModel.filteredEvents, id: \.id) { event in
                 NavigationLink {
                     EventDetailView(event: event)

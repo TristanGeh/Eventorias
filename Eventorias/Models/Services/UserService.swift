@@ -30,7 +30,7 @@ class UserService: UserProvider {
                 let user = User(uid: user.uid,
                                 name: data["name"] as? String ?? "",
                                 notification: data["notification"] as? Bool ?? false,
-                                profilPicture: data["profilPicture"] as? String ?? "",
+                                profilPicture: data["profilPicture"] as? String ?? "gs://eventorias.appspot.com/profileImages/profilePicture/424749a7435cc2127c161afd5b1854af.png",
                                 email: data["email"] as? String ?? "")
                 print("Document utilisateur récupéré : \(user)")
                 completion(.success(user))
